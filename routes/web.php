@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 |--------------------------------------------------------------------------
 */
 
-Auth::routes(['verify' => false]);
+Auth::routes(['verify' => true]);
 
 // Public welcome
 Route::get('/', fn() => view('welcome'))->name('welcome');
@@ -43,7 +43,7 @@ Route::get('/home', function() {
      return redirect('/dashboard');
 })->middleware('auth')->name('home');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
      //showQuestionnaire
      Route::get('questionnaire/show', [StudentController::class, 'showQuestionnaire'])
          ->name('student.questionnaire.show');
@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Admin dashboard
     Route::get('dashboard', [AdminDashboardController::class, 'index'])
          ->name('dashboard');
