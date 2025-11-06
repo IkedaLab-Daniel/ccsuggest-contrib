@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 31, 2025 at 07:01 PM
+-- Generation Time: Nov 06, 2025 at 02:54 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -591,7 +591,8 @@ CREATE TABLE `role_user` (
 
 INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
 (6, 1),
-(6, 1);
+(6, 1),
+(28, 1);
 
 -- --------------------------------------------------------
 
@@ -731,24 +732,31 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Ice Ice', 'ice@music.com', NULL, '$2y$10$O2268dfvFMyGXEtKtUUD2unt2Y.sHtknNq/trguq89Woay08zzKri', '4cvAfMojgc9UWWGKPqLeNXvvRmnXg3HXmYUAibOmXlKpGEhRIHtKH7pEOfGm', '2025-08-21 10:20:47', '2025-08-24 08:22:59', NULL),
-(3, 'My Real name', '123@gmail.com', NULL, '$2y$10$TlkcShjgXlNLKzO9Zf3.6eknnaJlyuSZyQXjaxf/gioGCeqUXFUtS', NULL, '2025-08-21 10:32:18', '2025-08-21 11:12:32', NULL),
-(4, 'Ice Ice Ice', 'iceiceice@gmail.com', NULL, '$2y$10$1hFsx8t9U3ry4IhI1XIZAerAn2fvfzWA14Pj4SmdfaZh9MdOSrUBO', NULL, '2025-08-21 11:12:57', '2025-08-21 11:13:23', NULL),
-(5, 'alvin castro', 'alvin@123.com', NULL, '$2y$10$qo.W4ch7BsI7/nKPoBRr2OhuNECFp0mhc7C8WcurlFhrnPe.XEena', NULL, '2025-08-21 19:34:07', '2025-08-21 19:34:07', NULL),
-(6, 'admin', 'admin@manage.com', NULL, '$2y$10$8A08kB1BgoDoS9iCt4dKcuXWHwv0N1gVEkcYghyVjLlPWRz.9bs1O', NULL, '2025-08-22 07:26:56', '2025-08-22 07:26:56', NULL),
-(7, 'User byAdmin', 'user123@gmail.com', NULL, '$2y$10$FBE1AZ0RIrbl3HH8nBmBVOQY/ulUSM11hi5GDJ.nNAgpmn7Qrk4C.', NULL, '2025-08-22 09:55:41', '2025-10-31 09:54:22', '2025-10-31 09:54:22'),
-(8, 'Daniel Callejas', 'sample@999.com', NULL, '$2y$10$Es/vo9vEqCwVKpecCj4YluCfxotkFwGF5kG2P2GlqD1nUeVpK862C', NULL, '2025-08-22 10:39:09', '2025-10-31 09:54:18', '2025-10-31 09:54:18'),
-(9, 'John Doe', 'weboracle.business@gmail.com', NULL, '$2y$10$Txi12dGRBZp7YxjSziJKLe/cjBefMPRz.8cAN5UhvjqwUgaOQXs7a', 'wKOauKHINebSRnKoIQoS0EzpkcTaht0o2dtnYc5jSGJr8jEYJ0BaGcN2cuII', '2025-08-23 11:23:22', '2025-08-23 11:57:19', NULL),
-(10, 'wow wow', 'wow@gmail.com', NULL, '$2y$10$nt8LVKORaqlASBeC0I1fj.UbGBKX51akvA4cTEAW83OnsA64BScQG', NULL, '2025-08-23 15:16:12', '2025-08-23 15:16:12', NULL),
-(11, 'pasword', 'pass@gmail.com', NULL, '$2y$10$fCOZ1zwfPRusM422MR6dyOp30XfBWUmmCP8CbEESAowNlvLfci7Sq', NULL, '2025-08-24 07:41:09', '2025-08-24 07:41:09', NULL),
-(12, 'Mark Daniel Callejas', 'buyer1@example.com', NULL, '$2y$10$n3YTAm4P1Qo5QWfWP3ge9uy4jmOefM3NnJrOaW9M84Rw1627G4uZa', NULL, '2025-08-24 07:51:44', '2025-10-31 09:54:25', '2025-10-31 09:54:25'),
-(13, 'survey person', 'survey@manage.com', NULL, '$2y$10$iW6aDewe6OmRi9LipcW1veG/emhCLWnqDUp.8O6cd6L13e6jBMNVO', NULL, '2025-09-09 06:19:06', '2025-09-09 06:19:06', NULL),
-(14, 'survey person2', 'survey1@manage.com', NULL, '$2y$10$ICHv9nhVFM5rGn9JNnB7Q.OIinYpXdGhHw291Gwv72NrUcn9TQMDG', NULL, '2025-09-09 06:42:30', '2025-09-09 06:42:30', NULL),
-(15, 'survey person3', 'survey2@manage.com', NULL, '$2y$10$AL4B2DdGzgJkVLZlP78FY.HCJCkLwkG0c9pRr2ZLS7ghELziX6/MK', NULL, '2025-09-09 06:57:39', '2025-09-09 06:57:39', NULL),
-(16, 'sample 1', 'sample22@gmail.com', NULL, '$2y$10$fyDox7uS8qWdRhhuZAUbhe/RmI3VEmuTB2FbhioJMvgSrxgqPujti', NULL, '2025-09-09 22:30:50', '2025-10-31 09:54:13', '2025-10-31 09:54:13'),
-(17, 'asjkd', 'qwe@qwe.com', NULL, '$2y$10$kw7A5O1yvgGWXoPGovLU4OtGfcBHeZ2FeU38RD/SGkITQpafxpFDG', NULL, '2025-09-09 22:43:54', '2025-09-09 22:43:54', NULL),
-(18, 'aa aa', 'aaa@aaa.com', NULL, '$2y$10$8nwi5HcGg84U56qjqQrQOew7YQVFY9iUoB4xAcbbplsOCKnYHWpmq', NULL, '2025-09-11 11:18:13', '2025-09-11 11:18:13', NULL),
-(19, 'Test User', 'test@example.com', NULL, '$2y$10$mOSDf5LRiiRJZLdzgHsPQOcCA3iyDuGRk2eE284o7G1DlNOt8DpFq', NULL, '2025-09-19 20:10:49', '2025-10-31 08:53:42', '2025-10-31 08:53:42');
+(1, 'Ice Ice', 'ice@music.com', '2025-11-06 01:50:08', '$2y$10$O2268dfvFMyGXEtKtUUD2unt2Y.sHtknNq/trguq89Woay08zzKri', 'H5Z0hlbPFiDLLB3jgjqDeEKOlhtzDN3BNYUxnK4WswjEjPFmgFm1K7Cj7aOx', '2025-08-21 10:20:47', '2025-08-24 08:22:59', NULL),
+(3, 'My Real name', '123@gmail.com', '2025-11-06 01:50:08', '$2y$10$TlkcShjgXlNLKzO9Zf3.6eknnaJlyuSZyQXjaxf/gioGCeqUXFUtS', NULL, '2025-08-21 10:32:18', '2025-08-21 11:12:32', NULL),
+(4, 'Ice Ice Ice', 'iceiceice@gmail.com', '2025-11-06 01:50:08', '$2y$10$1hFsx8t9U3ry4IhI1XIZAerAn2fvfzWA14Pj4SmdfaZh9MdOSrUBO', NULL, '2025-08-21 11:12:57', '2025-08-21 11:13:23', NULL),
+(5, 'alvin castro', 'alvin@123.com', '2025-11-06 01:50:08', '$2y$10$qo.W4ch7BsI7/nKPoBRr2OhuNECFp0mhc7C8WcurlFhrnPe.XEena', NULL, '2025-08-21 19:34:07', '2025-08-21 19:34:07', NULL),
+(6, 'admin', 'admin@manage.com', '2025-11-06 01:50:08', '$2y$10$8A08kB1BgoDoS9iCt4dKcuXWHwv0N1gVEkcYghyVjLlPWRz.9bs1O', NULL, '2025-08-22 07:26:56', '2025-08-22 07:26:56', NULL),
+(7, 'User byAdmin', 'user123@gmail.com', '2025-11-06 01:50:08', '$2y$10$FBE1AZ0RIrbl3HH8nBmBVOQY/ulUSM11hi5GDJ.nNAgpmn7Qrk4C.', NULL, '2025-08-22 09:55:41', '2025-10-31 09:54:22', '2025-10-31 09:54:22'),
+(8, 'Daniel Callejas', 'sample@999.com', '2025-11-06 01:50:08', '$2y$10$Es/vo9vEqCwVKpecCj4YluCfxotkFwGF5kG2P2GlqD1nUeVpK862C', NULL, '2025-08-22 10:39:09', '2025-10-31 09:54:18', '2025-10-31 09:54:18'),
+(9, 'John Doe', 'weboracle.business@gmail.com', '2025-11-06 01:50:08', '$2y$10$Txi12dGRBZp7YxjSziJKLe/cjBefMPRz.8cAN5UhvjqwUgaOQXs7a', 'wKOauKHINebSRnKoIQoS0EzpkcTaht0o2dtnYc5jSGJr8jEYJ0BaGcN2cuII', '2025-08-23 11:23:22', '2025-08-23 11:57:19', NULL),
+(10, 'wow wow', 'wow@gmail.com', '2025-11-06 01:50:08', '$2y$10$nt8LVKORaqlASBeC0I1fj.UbGBKX51akvA4cTEAW83OnsA64BScQG', NULL, '2025-08-23 15:16:12', '2025-08-23 15:16:12', NULL),
+(11, 'pasword', 'pass@gmail.com', '2025-11-06 01:50:08', '$2y$10$fCOZ1zwfPRusM422MR6dyOp30XfBWUmmCP8CbEESAowNlvLfci7Sq', NULL, '2025-08-24 07:41:09', '2025-08-24 07:41:09', NULL),
+(12, 'Mark Daniel Callejas', 'buyer1@example.com', '2025-11-06 01:50:08', '$2y$10$n3YTAm4P1Qo5QWfWP3ge9uy4jmOefM3NnJrOaW9M84Rw1627G4uZa', NULL, '2025-08-24 07:51:44', '2025-10-31 09:54:25', '2025-10-31 09:54:25'),
+(13, 'survey person', 'survey@manage.com', '2025-11-06 01:50:08', '$2y$10$iW6aDewe6OmRi9LipcW1veG/emhCLWnqDUp.8O6cd6L13e6jBMNVO', NULL, '2025-09-09 06:19:06', '2025-09-09 06:19:06', NULL),
+(14, 'survey person2', 'survey1@manage.com', '2025-11-06 01:50:08', '$2y$10$ICHv9nhVFM5rGn9JNnB7Q.OIinYpXdGhHw291Gwv72NrUcn9TQMDG', NULL, '2025-09-09 06:42:30', '2025-09-09 06:42:30', NULL),
+(15, 'survey person3', 'survey2@manage.com', '2025-11-06 01:50:08', '$2y$10$AL4B2DdGzgJkVLZlP78FY.HCJCkLwkG0c9pRr2ZLS7ghELziX6/MK', NULL, '2025-09-09 06:57:39', '2025-09-09 06:57:39', NULL),
+(16, 'sample 1', 'sample22@gmail.com', '2025-11-06 01:50:08', '$2y$10$fyDox7uS8qWdRhhuZAUbhe/RmI3VEmuTB2FbhioJMvgSrxgqPujti', NULL, '2025-09-09 22:30:50', '2025-10-31 09:54:13', '2025-10-31 09:54:13'),
+(17, 'asjkd', 'qwe@qwe.com', '2025-11-06 01:50:08', '$2y$10$kw7A5O1yvgGWXoPGovLU4OtGfcBHeZ2FeU38RD/SGkITQpafxpFDG', NULL, '2025-09-09 22:43:54', '2025-09-09 22:43:54', NULL),
+(18, 'aa aa', 'aaa@aaa.com', '2025-11-06 01:50:08', '$2y$10$8nwi5HcGg84U56qjqQrQOew7YQVFY9iUoB4xAcbbplsOCKnYHWpmq', NULL, '2025-09-11 11:18:13', '2025-09-11 11:18:13', NULL),
+(19, 'Test User', 'test@example.com', '2025-11-06 01:50:08', '$2y$10$mOSDf5LRiiRJZLdzgHsPQOcCA3iyDuGRk2eE284o7G1DlNOt8DpFq', NULL, '2025-09-19 20:10:49', '2025-10-31 08:53:42', '2025-10-31 08:53:42'),
+(22, 'Mark Daniel Callejas', 'ice@mus2ic.com', '2025-11-06 01:50:08', '$2y$10$6nsSQ0zcT9wOuX3.ivLk/upBu28JPaA3n70d/GpKhk1W5ov47H9WC', NULL, '2025-11-01 08:43:03', '2025-11-01 08:43:03', NULL),
+(23, 'Ice Ice', 'callejasmark63@gmail.com', '2025-11-06 01:50:08', '$2y$10$c6pJn2oGqGsl.B3OC8UxkuePhXYiByqK83H27wvCSE2fmchf.uKo2', NULL, '2025-11-01 08:49:51', '2025-11-01 08:50:06', NULL),
+(24, 'Sample User1', 'sampleuser1@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$ejcuDkNlzyUoBttlfzqTROqJT6DttSaomGdBVZBa0HxgaPLbomlgO', NULL, '2025-11-05 17:45:02', '2025-11-05 17:45:02', NULL),
+(25, 'Sample User2', 'sampleuser2@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$5gNUf3aOK5UYnhj8.xrCy.m0TtziM1Q8ao8bGV7Y4LWQZTxWFJA3a', NULL, '2025-11-05 17:45:57', '2025-11-05 17:45:57', NULL),
+(26, 'Sample User3', 'sampleuser3@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$GuUIHDl5esB7ZQMzuKK..eiewGjPN1ib2hkNTmztVBlBM3IlNGplG', NULL, '2025-11-05 17:46:53', '2025-11-05 17:46:53', NULL),
+(27, 'Sample User4', 'sampleuser4@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$ZNsciMXbBCd/VvFFMKoMlOSTZ3gCYdrNhTg.lYchVdWIGzyiNF6Ta', NULL, '2025-11-05 17:47:34', '2025-11-05 17:47:34', NULL),
+(28, 'Admin CCSuggest', 'admin@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$0tCpiTIOryHF7i/tnpZFauWLsfx2cNFBEF9qCl8h7NdKIkBTWvEqq', NULL, '2025-11-05 17:48:07', '2025-11-05 17:48:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -922,7 +930,7 @@ ALTER TABLE `universities`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `user_survey_responses`
