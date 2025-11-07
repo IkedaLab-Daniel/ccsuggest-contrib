@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -20,7 +21,8 @@ use Illuminate\Support\Facades\Auth;
 |--------------------------------------------------------------------------
 */
 
-Auth::routes(['verify' => true]);
+// Auth routes (excluding email verification - we'll handle it manually)
+Auth::routes(['verify' => false]);
 
 // Public welcome
 Route::get('/', fn() => view('welcome'))->name('welcome');
@@ -37,6 +39,16 @@ Route::middleware('guest')->group(function(){
 Route::post('logout', [LoginController::class,'logout'])
      ->middleware('auth')
      ->name('logout');
+
+// Email Verification Routes (OTP-based)
+Route::middleware('auth')->group(function () {
+    Route::get('email/verify', [VerificationController::class, 'show'])
+        ->name('verification.notice');
+    Route::post('email/verify', [VerificationController::class, 'verify'])
+        ->name('verification.verify');
+    Route::post('email/resend', [VerificationController::class, 'resend'])
+        ->name('verification.resend');
+});
 
 // Home (for non-admins)
 Route::get('/home', function() {
