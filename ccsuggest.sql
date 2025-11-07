@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 07, 2025 at 06:10 PM
+-- Generation Time: Nov 07, 2025 at 06:20 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -42,7 +42,8 @@ CREATE TABLE `email_verification_codes` (
 --
 
 INSERT INTO `email_verification_codes` (`id`, `user_id`, `code`, `expires_at`, `is_used`, `created_at`, `updated_at`) VALUES
-(2, 31, '125177', '2025-11-07 17:04:44', 1, '2025-11-07 09:04:14', '2025-11-07 09:04:44');
+(2, 31, '125177', '2025-11-07 17:04:44', 1, '2025-11-07 09:04:14', '2025-11-07 09:04:44'),
+(3, 32, '784083', '2025-11-07 17:17:46', 1, '2025-11-07 09:17:23', '2025-11-07 09:17:46');
 
 -- --------------------------------------------------------
 
@@ -618,7 +619,8 @@ CREATE TABLE `role_user` (
 INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
 (6, 1),
 (6, 1),
-(28, 1);
+(28, 1),
+(32, 1);
 
 -- --------------------------------------------------------
 
@@ -783,7 +785,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 (26, 'Sample User3', 'sampleuser3@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$GuUIHDl5esB7ZQMzuKK..eiewGjPN1ib2hkNTmztVBlBM3IlNGplG', NULL, '2025-11-05 17:46:53', '2025-11-05 17:46:53', NULL),
 (27, 'Sample User4', 'sampleuser4@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$ZNsciMXbBCd/VvFFMKoMlOSTZ3gCYdrNhTg.lYchVdWIGzyiNF6Ta', NULL, '2025-11-05 17:47:34', '2025-11-05 17:47:34', NULL),
 (28, 'Admin CCSuggest', 'admin@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$0tCpiTIOryHF7i/tnpZFauWLsfx2cNFBEF9qCl8h7NdKIkBTWvEqq', NULL, '2025-11-05 17:48:07', '2025-11-05 17:48:07', NULL),
-(31, '123 1 23', 'bunnyfufuu0905@gmail.com', '2025-11-07 09:04:44', '$2y$10$oUyTc/T8Np7BV8XWXfpKZuxHfh13mBhocoOaWw1t8.kcC9aRPkMnO', NULL, '2025-11-07 09:04:14', '2025-11-07 09:04:44', NULL);
+(31, '123 1 23', 'bunnyfufuu0905@gmail.com', '2025-11-07 09:04:44', '$2y$10$oUyTc/T8Np7BV8XWXfpKZuxHfh13mBhocoOaWw1t8.kcC9aRPkMnO', NULL, '2025-11-07 09:04:14', '2025-11-07 09:04:44', NULL),
+(32, 'Admin', 'ccsuggest@gmail.com', '2025-11-07 09:17:46', '$2y$10$i4HcsycCeyO9cJNYQYzCDuBcRrLX3K2UW7ndCYkUH..DzjuT2gj3y', NULL, '2025-11-07 09:17:23', '2025-11-07 09:17:46', NULL);
 
 -- --------------------------------------------------------
 
@@ -910,7 +913,7 @@ ALTER TABLE `user_survey_responses`
 -- AUTO_INCREMENT for table `email_verification_codes`
 --
 ALTER TABLE `email_verification_codes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -970,7 +973,7 @@ ALTER TABLE `universities`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `user_survey_responses`
