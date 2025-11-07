@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 06, 2025 at 02:54 AM
+-- Generation Time: Nov 07, 2025 at 06:10 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `ccsuggest`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_verification_codes`
+--
+
+CREATE TABLE `email_verification_codes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `code` varchar(6) NOT NULL,
+  `expires_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `is_used` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `email_verification_codes`
+--
+
+INSERT INTO `email_verification_codes` (`id`, `user_id`, `code`, `expires_at`, `is_used`, `created_at`, `updated_at`) VALUES
+(2, 31, '125177', '2025-11-07 17:04:44', 1, '2025-11-07 09:04:14', '2025-11-07 09:04:44');
 
 -- --------------------------------------------------------
 
@@ -63,7 +86,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (7, '2025_08_20_010000_create_question_options_table', 1),
 (8, '2025_09_19_134707_add_dynamic_fields_to_questions_table', 2),
 (9, '2025_09_22_161243_create_universities_table', 3),
-(10, '2025_10_31_163854_add_soft_deletes_to_users_table', 4);
+(10, '2025_10_31_163854_add_soft_deletes_to_users_table', 4),
+(11, '2025_11_07_165028_create_email_verification_codes_table', 5);
 
 -- --------------------------------------------------------
 
@@ -82,6 +106,8 @@ CREATE TABLE `password_resets` (
 --
 
 INSERT INTO `password_resets` (`email`, `token`, `created_at`) VALUES
+('bunnyfufuu0905@gmail.com', '$2y$10$.MaGJLvQIVABfPyWCAbTU.WlIDAU.M4c6wU8LcoQd8KY7KqolTE6.', '2025-11-07 08:44:55'),
+('callejasmark63@gmail.com', '$2y$10$drpT41INFSgUtXQcp6AYVOmGyr2ZuICDnAfF/mDInX7xFoWX/2a6W', '2025-11-07 08:40:57'),
 ('ice@music.com', '$2y$10$6yEaN5q81EzMLE/Xcb/K4eicLcyAerkInIVOKUeA2G6S4dYYM5RC.', '2025-08-23 11:00:49'),
 ('weboracle.business@gmail.com', '$2y$10$CzgiDR6X2qVPhud64KkfdeRYnoA3nxasT.v/h0/T5Czuqdl931wYy', '2025-08-23 12:00:25');
 
@@ -756,7 +782,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 (25, 'Sample User2', 'sampleuser2@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$5gNUf3aOK5UYnhj8.xrCy.m0TtziM1Q8ao8bGV7Y4LWQZTxWFJA3a', NULL, '2025-11-05 17:45:57', '2025-11-05 17:45:57', NULL),
 (26, 'Sample User3', 'sampleuser3@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$GuUIHDl5esB7ZQMzuKK..eiewGjPN1ib2hkNTmztVBlBM3IlNGplG', NULL, '2025-11-05 17:46:53', '2025-11-05 17:46:53', NULL),
 (27, 'Sample User4', 'sampleuser4@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$ZNsciMXbBCd/VvFFMKoMlOSTZ3gCYdrNhTg.lYchVdWIGzyiNF6Ta', NULL, '2025-11-05 17:47:34', '2025-11-05 17:47:34', NULL),
-(28, 'Admin CCSuggest', 'admin@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$0tCpiTIOryHF7i/tnpZFauWLsfx2cNFBEF9qCl8h7NdKIkBTWvEqq', NULL, '2025-11-05 17:48:07', '2025-11-05 17:48:07', NULL);
+(28, 'Admin CCSuggest', 'admin@ccsuggest.com', '2025-11-06 01:50:08', '$2y$10$0tCpiTIOryHF7i/tnpZFauWLsfx2cNFBEF9qCl8h7NdKIkBTWvEqq', NULL, '2025-11-05 17:48:07', '2025-11-05 17:48:07', NULL),
+(31, '123 1 23', 'bunnyfufuu0905@gmail.com', '2025-11-07 09:04:44', '$2y$10$oUyTc/T8Np7BV8XWXfpKZuxHfh13mBhocoOaWw1t8.kcC9aRPkMnO', NULL, '2025-11-07 09:04:14', '2025-11-07 09:04:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -788,6 +815,13 @@ INSERT INTO `user_survey_responses` (`id`, `user_id`, `satisfaction_rating`, `fe
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `email_verification_codes`
+--
+ALTER TABLE `email_verification_codes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `email_verification_codes_user_id_code_index` (`user_id`,`code`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -873,6 +907,12 @@ ALTER TABLE `user_survey_responses`
 --
 
 --
+-- AUTO_INCREMENT for table `email_verification_codes`
+--
+ALTER TABLE `email_verification_codes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -882,7 +922,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -930,7 +970,7 @@ ALTER TABLE `universities`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `user_survey_responses`
@@ -941,6 +981,12 @@ ALTER TABLE `user_survey_responses`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `email_verification_codes`
+--
+ALTER TABLE `email_verification_codes`
+  ADD CONSTRAINT `email_verification_codes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `question_options`
