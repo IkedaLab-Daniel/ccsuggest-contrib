@@ -14,7 +14,7 @@ from flask_cors import CORS
 load_dotenv()
 
 app        = Flask(__name__)
-CORS(app, origins=["https://career-comm-main-laravel.onrender.com", "https://ccsuggest.netlify.app", "http://localhost:8000"])
+CORS(app) 
 MODEL_PATH = "model.pkl"
 DATA_PATH  = "data/training_data.csv"
 PDF_PATH   = "decision_tree.pdf"

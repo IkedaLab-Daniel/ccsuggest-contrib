@@ -37,7 +37,7 @@ class DecisionTreeService
     public function __construct()
     {
         $this->http = new Client([
-            'base_uri' => rtrim(env('DTREE_API', 'http://127.0.0.1:5001'), '/').'/',
+            'base_uri' => rtrim(config('services.dtree.api_url', 'http://127.0.0.1:5001'), '/').'/',
             'timeout'  => 10.0,
         ]);
     }
