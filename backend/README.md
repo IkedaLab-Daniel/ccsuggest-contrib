@@ -72,8 +72,7 @@ backend/
 MIT
 
 ## Authors
-- IkedaLab-Daniel
-- Mark Daniel Callejas
+- Developer Team
 
 ---
 For questions or issues, please contact the project maintainers.

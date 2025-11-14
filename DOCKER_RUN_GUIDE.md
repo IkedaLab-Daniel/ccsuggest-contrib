@@ -1,6 +1,6 @@
 # Pull the images
-docker pull ikedalabdaniel/flask-backend:latest
-docker pull ikedalabdaniel/laravel-app:latest
+docker pull YOUR_DOCKERHUB_USERNAME/flask-backend:latest
+docker pull YOUR_DOCKERHUB_USERNAME/laravel-app:latest
 
 # Run Flask backend
 docker run -d --name flask-backend -p 5001:8080 \
@@ -10,7 +10,7 @@ docker run -d --name flask-backend -p 5001:8080 \
   -e DB_PASSWORD= \
   -e DB_NAME=ccsuggest \
   -e PORT=8080 \
-  ikedalabdaniel/flask-backend:latest
+  YOUR_DOCKERHUB_USERNAME/flask-backend:latest
 
 # Run Laravel app
 docker run -d --name laravel-app -p 8000:8080 \
@@ -22,4 +22,4 @@ docker run -d --name laravel-app -p 8000:8080 \
   -e DB_USERNAME=root \
   -e DB_PASSWORD= \
   -e DTREE_API=http://host.docker.internal:5001 \
-  ikedalabdaniel/laravel-app:latest
+  YOUR_DOCKERHUB_USERNAME/laravel-app:latest
