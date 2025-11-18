@@ -1,12 +1,27 @@
 # Flask Decision Tree Service
 
-This backend service provides a Flask API for training, serving, and retraining a decision tree model for technology field recommendations. It is designed to work with the Laravel frontend and admin dashboard.
+This backend service provides a Flask API for training, serving, and retraining a **C4.5-style decision tree model** for technology field recommendations. It is designed to work with the Laravel frontend and admin dashboard.
+
+## Algorithm: C4.5 Decision Tree
+
+This implementation uses **DecisionTreeClassifier with entropy criterion**, which closely mimics the C4.5 algorithm:
+
+- **Splitting Criterion**: Information Gain (entropy)
+- **Pruning**: Controlled via `max_depth`, `min_samples_split`, and `min_samples_leaf`
+- **Interpretability**: Exports human-readable tree rules and visualizations
+
+### Why C4.5?
+- ✅ **Explainable**: Easy to understand and visualize decision paths
+- ✅ **Efficient**: Fast training and prediction
+- ✅ **Academic**: Widely recognized algorithm for classification tasks
+- ✅ **Interpretable Rules**: Generates clear IF-THEN rules for recommendations
 
 ## Features
-- Train and serve a decision tree model for tech field recommendations
+- Train and serve a C4.5-style decision tree model for tech field recommendations
 - Expose REST API endpoints for predictions and retraining
 - Integrate with CSV training data
-- PDF export of decision tree
+- Export decision tree as text rules (`decision_tree_rules.txt`)
+- Export decision tree visualization as PNG (`decision_tree.png`)
 - Admin-triggered retraining via POST request
 
 ## Directory Structure
