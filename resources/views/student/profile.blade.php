@@ -80,41 +80,7 @@
         @enderror
       </div>
 
-      {{-- GPA --}}
-      <div class="mb-4">
-        <label for="gpa" class="block text-gray-700">GPA (0.00 – 4.00)</label>
-        <input
-          type="number"
-          step="0.01"
-          min="0" max="4"
-          id="gpa"
-          name="gpa"
-          value="{{ old('gpa', $profile->gpa) }}"
-          class="mt-1 block w-full border-gray-300 rounded"
-        >
-        @error('gpa')
-          <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-        @enderror
-      </div>
-
-      {{-- Senior High School Grade --}}
-      <div class="mb-4">
-        <label for="senior_high_grade" class="block text-gray-700">
-          Senior High School Final Grade (0 – 100)
-        </label>
-        <input
-          type="number"
-          step="0.01"
-          min="0" max="100"
-          id="senior_high_grade"
-          name="senior_high_grade"
-          value="{{ old('senior_high_grade', $profile->senior_high_grade) }}"
-          class="mt-1 block w-full border-gray-300 rounded"
-        >
-        @error('senior_high_grade')
-          <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-        @enderror
-      </div>
+      {{-- GPA and Senior High School Grade fields have been removed from the UI as per request. --}}
 
       @php
         // Prepare initial tags: old input or existing interests or defaults
@@ -123,8 +89,8 @@
       @endphp
 
       {{-- Interests --}}
-      <div class="mb-6" x-data="interestTags()">
-        <label class="block text-gray-700">Your Interests</label>
+      <div class="mb-6" x-data="interestTags({{ json_encode($initialTags) }})">
+          <label class="block text-gray-700">Your Interests</label>
         <div class="mt-1 border border-gray-300 rounded p-2 flex flex-wrap">
           <template x-for="(tag, i) in tags" :key="i">
             <span class="flex items-center bg-blue-100 text-blue-800 rounded-full px-2 py-1 mr-2 mb-2">
@@ -162,10 +128,10 @@
   <style>
     [x-cloak] { display: none; }
   </style>
-  <script>
-    function interestTags() {
+    <script>
+    function interestTags(initialTags) {
       return {
-        tags: @json($initialTags),
+        tags: initialTags,
         newTag: '',
         addTag() {
           const t = this.newTag.trim();
@@ -177,8 +143,9 @@
         removeTag(i) {
           this.tags.splice(i, 1);
         }
-      }
+      };
     }
+
     function profileForm() {
       return {
         loading: false,
@@ -186,7 +153,7 @@
           this.loading = true;
           this.$refs.form.submit();
         }
-      }
+      };
     }
-  </script>
+    </script>
 @endsection
