@@ -82,37 +82,7 @@
 
       {{-- GPA and Senior High School Grade fields have been removed from the UI as per request. --}}
 
-      @php
-        // Prepare initial tags: old input or existing interests or defaults
-        $defaults = ['Programming','Web Development','Mobile Apps','Data Science','Cybersecurity','Networking'];
-        $initialTags = old('interests', $profile->interests ?? $defaults);
-      @endphp
-
-      {{-- Interests --}}
-      <div class="mb-6" x-data="interestTags({{ json_encode($initialTags) }})">
-          <label class="block text-gray-700">Your Interests</label>
-        <div class="mt-1 border border-gray-300 rounded p-2 flex flex-wrap">
-          <template x-for="(tag, i) in tags" :key="i">
-            <span class="flex items-center bg-blue-100 text-blue-800 rounded-full px-2 py-1 mr-2 mb-2">
-              <span x-text="tag"></span>
-              <button type="button" @click="removeTag(i)" class="ml-1 text-lg leading-none">&times;</button>
-            </span>
-          </template>
-          <input
-            type="text"
-            x-model="newTag"
-            @keydown.enter.prevent="addTag()"
-            placeholder="Type and press Enter"
-            class="flex-1 outline-none"
-          >
-        </div>
-        <template x-for="tag in tags" :key="tag">
-          <input type="hidden" name="interests[]" :value="tag">
-        </template>
-        @error('interests')
-          <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-        @enderror
-      </div>
+      <!-- Interests section removed as per request -->
 
       <button
         type="submit"
