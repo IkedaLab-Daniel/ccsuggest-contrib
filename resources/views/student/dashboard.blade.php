@@ -84,37 +84,6 @@
           <dt class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Gender</dt>
           <dd class="text-lg font-medium text-gray-900 capitalize group-hover:text-indigo-600 transition-colors">{{ $profile->gender ?? '—' }}</dd>
         </div>
-
-        <div class="group">
-          <dt class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">GPA</dt>
-          <dd class="text-lg font-medium text-gray-900 group-hover:text-indigo-600 transition-colors">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
-              {{ $profile->gpa ?? '—' }}
-            </span>
-          </dd>
-        </div>
-
-        <div class="group">
-          <dt class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Senior HS Grade</dt>
-          <dd class="text-lg font-medium text-gray-900 group-hover:text-indigo-600 transition-colors">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-              {{ $profile->senior_high_grade ?? '—' }}
-            </span>
-          </dd>
-        </div>
-
-        <div class="md:col-span-2 xl:col-span-1">
-          <dt class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Interests</dt>
-          <dd class="flex flex-wrap gap-2">
-            @forelse($profile->interests ?? [] as $tag)
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 hover:from-purple-200 hover:to-pink-200 transition-all duration-200">
-                {{ $tag }}
-              </span>
-            @empty
-              <span class="text-gray-600">—</span>
-            @endforelse
-          </dd>
-        </div>
       </dl>
     @endunless
   </section>
