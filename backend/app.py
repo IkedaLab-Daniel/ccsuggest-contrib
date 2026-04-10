@@ -11,6 +11,8 @@ import numpy as np
 from flask import Flask, request, jsonify, send_file, render_template
 from sklearn.tree import DecisionTreeClassifier, export_text, plot_tree
 from sklearn.ensemble import BaggingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 from joblib import load, dump
 from build_training_dataset import build_dataset
 from dotenv import load_dotenv
@@ -51,6 +53,26 @@ def ensure_csv():
             print(f"Failed to build training dataset: {str(e)}")
             raise
 
+def build_c45_ensemble():
+    # Centralize model hyperparameters so training and evaluation stay aligned.
+    base_c45_tree = DecisionTreeClassifier(
+        criterion='entropy',
+        max_depth=15,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        random_state=42
+    )
+
+    return BaggingClassifier(
+        estimator=base_c45_tree,
+        n_estimators=10,
+        max_samples=0.8,
+        max_features=0.8,
+        bootstrap=True,
+        random_state=42,
+        n_jobs=-1
+    )
+
 def train_and_save():
     try:
         ensure_csv()
@@ -74,27 +96,7 @@ def train_and_save():
             raise ValueError("No feature columns found in training data")
         
         print(f"Training with {len(df)} records and {len(X.columns)} features")
-        
-        # C4.5-style Decision Tree as base estimator
-        base_c45_tree = DecisionTreeClassifier(
-            criterion='entropy',        # Information Gain (C4.5's method)
-            max_depth=15,               # Prevent overfitting
-            min_samples_split=5,        # Minimum samples to split a node
-            min_samples_leaf=2,         # Minimum samples in leaf node
-            random_state=42
-        )
-        
-        # Ensemble of 10 C4.5 trees with soft voting
-        # This provides better probability distributions for Top 3 recommendations
-        clf = BaggingClassifier(
-            estimator=base_c45_tree,
-            n_estimators=10,            # 10 C4.5 trees voting
-            max_samples=0.8,            # Each tree sees 80% of data
-            max_features=0.8,           # Each tree sees 80% of features
-            bootstrap=True,             # Sample with replacement
-            random_state=42,
-            n_jobs=-1                   # Use all CPU cores
-        )
+        clf = build_c45_ensemble()
         
         print("Training ensemble of 10 C4.5 decision trees...")
         clf.fit(X, y)
@@ -135,6 +137,64 @@ def get_model():
     return load(MODEL_PATH) if os.path.exists(MODEL_PATH) else train_and_save()
 
 clf = get_model()
+
+@app.get("/accuracy")
+def accuracy():
+    try:
+        ensure_csv()
+        df = pd.read_csv(DATA_PATH)
+
+        if df.empty:
+            raise ValueError("Training dataset is empty. No responses found in database.")
+
+        if len(df) < 10:
+            raise ValueError(f"Insufficient data for evaluation: only {len(df)} records found. Need at least 10 records.")
+
+        if "tech_field_id" not in df.columns:
+            raise ValueError("Missing 'tech_field_id' column in training data")
+
+        X = df.drop("tech_field_id", axis=1)
+        y = df["tech_field_id"]
+
+        if X.empty or len(X.columns) == 0:
+            raise ValueError("No feature columns found in training data")
+
+        class_counts = y.value_counts()
+        stratify_labels = y if (y.nunique() > 1 and class_counts.min() >= 2) else None
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.2,
+            random_state=42,
+            stratify=stratify_labels
+        )
+
+        eval_clf = build_c45_ensemble()
+        eval_clf.fit(X_train, y_train)
+
+        y_pred = eval_clf.predict(X_test)
+        accuracy_value = accuracy_score(y_test, y_pred)
+
+        return jsonify({
+            "status": "ok",
+            "algorithm": "C4.5 Ensemble with Soft Voting",
+            "accuracy": float(accuracy_value),
+            "accuracy_percent": round(float(accuracy_value) * 100, 2),
+            "train_size": int(len(X_train)),
+            "test_size": int(len(X_test)),
+            "stratified": stratify_labels is not None
+        })
+    except ValueError as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e)
+        }), 400
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": f"Unexpected error during accuracy evaluation: {str(e)}"
+        }), 500
 
 @app.post("/predict")
 def predict():
