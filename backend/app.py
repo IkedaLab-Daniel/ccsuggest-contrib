@@ -1,5 +1,5 @@
 """
-Flask microservice exposing /predict and /retrain,
+Flask microservice exposing /predict, /retrain and /accuracy,
 auto-building the CSV if missing.
 Uses C4.5-style Decision Tree Ensemble with entropy (Information Gain).
 Multiple C4.5 trees with soft voting for better probability distributions.
