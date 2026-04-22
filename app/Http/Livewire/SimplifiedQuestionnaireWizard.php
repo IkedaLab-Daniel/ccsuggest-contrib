@@ -9,6 +9,7 @@ use App\Models\Response;
 use App\Services\SimplifiedQuestionnaireService;
 use App\Services\DecisionTreeService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SimplifiedQuestionnaireWizard extends Component
@@ -214,28 +215,41 @@ class SimplifiedQuestionnaireWizard extends Component
 
         $userId = (int) auth()->id();
 
-        Response::where('user_id', $userId)->delete();
+        DB::transaction(function () use ($userId) {
+            Response::where('user_id', $userId)->delete();
 
-        foreach ($this->allAnswers as $questionId => $answer) {
-            $optionId = null;
+            $nextResponseId = ((int) DB::table('responses')->max('id')) + 1;
+            $timestamp = now();
+            $rows = [];
 
-            if (!is_array($answer)) {
-                $option = QuestionOption::where('question_id', $questionId)
-                    ->where('value', (string) $answer)
-                    ->first();
+            foreach ($this->allAnswers as $questionId => $answer) {
+                $optionId = null;
 
-                if ($option) {
-                    $optionId = $option->id;
+                if (!is_array($answer)) {
+                    $option = QuestionOption::where('question_id', $questionId)
+                        ->where('value', (string) $answer)
+                        ->first();
+
+                    if ($option) {
+                        $optionId = $option->id;
+                    }
                 }
+
+                $rows[] = [
+                    'id' => $nextResponseId++,
+                    'user_id' => $userId,
+                    'question_id' => (int) $questionId,
+                    'option_id' => $optionId,
+                    'value' => is_array($answer) ? json_encode($answer) : (string) $answer,
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ];
             }
 
-            Response::create([
-                'user_id' => $userId,
-                'question_id' => (int) $questionId,
-                'option_id' => $optionId,
-                'value' => $answer,
-            ]);
-        }
+            if (!empty($rows)) {
+                DB::table('responses')->insert($rows);
+            }
+        });
     }
     
     protected function generateRecommendations(array $completeAnswers): void
