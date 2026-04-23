@@ -4,9 +4,12 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Question;
+use App\Models\QuestionOption;
+use App\Models\Response;
 use App\Services\SimplifiedQuestionnaireService;
 use App\Services\DecisionTreeService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SimplifiedQuestionnaireWizard extends Component
@@ -187,6 +190,9 @@ class SimplifiedQuestionnaireWizard extends Component
         // Generate complete answer payload
         $this->ensureServicesInitialized();
         $completeAnswers = $this->simplifiedService->generateCompleteAnswerPayload($this->allAnswers);
+
+        // Persist raw questionnaire answers so analytics can use true response data.
+        $this->persistResponses();
         
         // Generate recommendations
         $this->generateRecommendations($completeAnswers);
@@ -199,6 +205,51 @@ class SimplifiedQuestionnaireWizard extends Component
         
         // Redirect to results page immediately
         $this->redirect(route('student.results'));
+    }
+
+    protected function persistResponses(): void
+    {
+        if (!auth()->check() || empty($this->allAnswers)) {
+            return;
+        }
+
+        $userId = (int) auth()->id();
+
+        DB::transaction(function () use ($userId) {
+            Response::where('user_id', $userId)->delete();
+
+            $nextResponseId = ((int) DB::table('responses')->max('id')) + 1;
+            $timestamp = now();
+            $rows = [];
+
+            foreach ($this->allAnswers as $questionId => $answer) {
+                $optionId = null;
+
+                if (!is_array($answer)) {
+                    $option = QuestionOption::where('question_id', $questionId)
+                        ->where('value', (string) $answer)
+                        ->first();
+
+                    if ($option) {
+                        $optionId = $option->id;
+                    }
+                }
+
+                $rows[] = [
+                    'id' => $nextResponseId++,
+                    'user_id' => $userId,
+                    'question_id' => (int) $questionId,
+                    'option_id' => $optionId,
+                    'value' => is_array($answer) ? json_encode($answer) : (string) $answer,
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ];
+            }
+
+            if (!empty($rows)) {
+                DB::table('responses')->insert($rows);
+            }
+        });
     }
     
     protected function generateRecommendations(array $completeAnswers): void
