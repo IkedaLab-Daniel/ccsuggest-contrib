@@ -27,6 +27,35 @@
       class="mb-6"
     ></div>
 
+    <!-- Results Card -->
+    <div class="bg-white p-8 rounded-lg shadow mb-6">
+      <h2 class="text-2xl font-semibold mb-6">Your Top Recommendations</h2>
+
+      <div class="space-y-4">
+        @foreach($recommendations->take(3) as $index => $rec)
+          <div class="border border-gray-200 p-4 rounded-lg">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center mb-2">
+                  <span class="bg-blue-600 text-white text-sm font-semibold px-3 py-1 rounded-full mr-3">
+                    #{{ $index + 1 }}
+                  </span>
+                  <h3 class="font-semibold text-lg">{{ $rec->techField->name }}</h3>
+                </div>
+                <p class="text-gray-600 text-sm leading-relaxed">{{ $rec->techField->description }}</p>
+              </div>
+              <div class="ml-4 text-right">
+                <div class="bg-gray-100 text-gray-800 px-3 py-1 rounded text-sm font-semibold">
+                  {{ round($rec->score * 100) }}%
+                </div>
+                <div class="text-xs text-gray-500 mt-1">Match</div>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </div>
+
     <!-- Universities Recommendations Card -->
     @if(!empty($universities))
     <div class="bg-white p-8 rounded-lg shadow mb-6">

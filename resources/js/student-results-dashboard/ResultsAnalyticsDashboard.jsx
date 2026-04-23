@@ -4,13 +4,11 @@ import {
 } from './chartData';
 import ChartCard from './components/ChartCard';
 import TopMatchesBarChart from './components/TopMatchesBarChart';
-import RecommendationPieChart from './components/RecommendationPieChart';
 
 export default function ResultsAnalyticsDashboard({ chartPayload = {} }) {
     const dashboardData = useMemo(() => sanitizeChartPayload(chartPayload), [chartPayload]);
     const {
         barData,
-        donutData,
     } = dashboardData;
 
     const [selectedCareer, setSelectedCareer] = useState(barData[0]?.name || '');
@@ -30,13 +28,6 @@ export default function ResultsAnalyticsDashboard({ chartPayload = {} }) {
                     selectedCareer={selectedCareer}
                     onSelectCareer={setSelectedCareer}
                 />
-            </ChartCard>
-
-            <ChartCard
-                title="Recommendation Distribution"
-                subtitle="Overall recommendation share (Top 5 fields + Others) with visible percentages."
-            >
-                <RecommendationPieChart data={donutData} topLabel={`Top Match: ${barData[0]?.name || 'N/A'}`} />
             </ChartCard>
         </div>
     );
