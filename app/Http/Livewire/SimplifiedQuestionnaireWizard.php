@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Question;
+use App\Models\QuestionOption;
+use App\Models\Response;
 use App\Services\SimplifiedQuestionnaireService;
 use App\Services\DecisionTreeService;
 use Illuminate\Support\Facades\Auth;
@@ -187,6 +189,9 @@ class SimplifiedQuestionnaireWizard extends Component
         // Generate complete answer payload
         $this->ensureServicesInitialized();
         $completeAnswers = $this->simplifiedService->generateCompleteAnswerPayload($this->allAnswers);
+
+        // Persist raw questionnaire answers so analytics can use true response data.
+        $this->persistResponses();
         
         // Generate recommendations
         $this->generateRecommendations($completeAnswers);
@@ -199,6 +204,38 @@ class SimplifiedQuestionnaireWizard extends Component
         
         // Redirect to results page immediately
         $this->redirect(route('student.results'));
+    }
+
+    protected function persistResponses(): void
+    {
+        if (!auth()->check() || empty($this->allAnswers)) {
+            return;
+        }
+
+        $userId = (int) auth()->id();
+
+        Response::where('user_id', $userId)->delete();
+
+        foreach ($this->allAnswers as $questionId => $answer) {
+            $optionId = null;
+
+            if (!is_array($answer)) {
+                $option = QuestionOption::where('question_id', $questionId)
+                    ->where('value', (string) $answer)
+                    ->first();
+
+                if ($option) {
+                    $optionId = $option->id;
+                }
+            }
+
+            Response::create([
+                'user_id' => $userId,
+                'question_id' => (int) $questionId,
+                'option_id' => $optionId,
+                'value' => $answer,
+            ]);
+        }
     }
     
     protected function generateRecommendations(array $completeAnswers): void

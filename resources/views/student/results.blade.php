@@ -21,6 +21,12 @@
       </a>
     </div>
   @else
+    <div
+      id="results-analytics-dashboard"
+      data-chart-payload='@json($chartPayload ?? [], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG)'
+      class="mb-6"
+    ></div>
+
     <!-- Results Card -->
     <div class="bg-white p-8 rounded-lg shadow mb-6">
       <h2 class="text-2xl font-semibold mb-6">Your Top Recommendations</h2>
@@ -304,6 +310,8 @@
 <style>
   [x-cloak] { display: none; }
 </style>
+
+@vite('resources/js/app.js')
   
 <script>
   function surveyForm() {

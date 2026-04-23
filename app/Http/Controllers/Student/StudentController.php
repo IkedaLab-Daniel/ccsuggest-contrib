@@ -281,9 +281,329 @@ public function updateProfile(Request $request)
         
         // Check if user has completed the survey
         $hasSurvey = $user->surveyResponse()->exists();
+
+        $chartPayload = $this->buildChartPayload($recommendations, (int) $user->id);
         
-        return view('student.results', compact('recommendations', 'universities', 'error', 'hasSurvey'));
+        return view('student.results', compact('recommendations', 'universities', 'error', 'hasSurvey', 'chartPayload'));
     }
+
+      private function buildChartPayload($recommendations, int $userId): array
+      {
+        $recommendationCollection = collect($recommendations)->values();
+
+        $barData = $recommendationCollection
+          ->take(3)
+          ->values()
+          ->map(function ($recommendation) {
+            return [
+              'name' => $recommendation->techField->name,
+              'score' => round($recommendation->score * 100),
+              'explanation' => $recommendation->techField->description,
+            ];
+          })
+          ->all();
+
+        $donutData = $recommendationCollection
+          ->map(function ($recommendation) {
+            return [
+              'name' => $recommendation->techField->name,
+              'score' => round($recommendation->score * 100),
+              'explanation' => $recommendation->techField->description,
+            ];
+          })
+          ->all();
+
+        $axisBaseScores = $this->calculateAxisBaseScores($userId);
+        $radarAxes = ['Logic', 'Creativity', 'Hardware', 'Security', 'Problem-Solving'];
+        $radarAxisExplanations = [
+          'Logic' => 'How strongly your answers indicate analytical and structured reasoning.',
+          'Creativity' => 'How strongly your answers suggest design, ideation, and creative output.',
+          'Hardware' => 'How strongly your answers align with device, systems, and physical computing interests.',
+          'Security' => 'How strongly your answers reflect safety, risk awareness, and secure-by-design thinking.',
+          'Problem-Solving' => 'How strongly your answers indicate persistence in resolving complex technical challenges.',
+        ];
+
+        $topCareerRecommendations = $recommendationCollection->take(3)->values();
+        $radarSeries = $topCareerRecommendations
+          ->map(function ($recommendation, $index) {
+            return [
+              'key' => 'career_' . $index,
+              'label' => $recommendation->techField->name,
+              'score' => round($recommendation->score * 100),
+            ];
+          })
+          ->all();
+
+        $radarData = collect($radarAxes)
+          ->map(function ($axis) use ($topCareerRecommendations, $axisBaseScores, $radarAxisExplanations) {
+            $row = [
+              'axis' => $axis,
+              'explanation' => $radarAxisExplanations[$axis],
+            ];
+
+            foreach ($topCareerRecommendations as $index => $recommendation) {
+              $row['career_' . $index] = $this->calculateCareerAxisScore(
+                $axisBaseScores[$axis] ?? 55,
+                (float) $recommendation->score,
+                $axis,
+                $recommendation->techField->name
+              );
+            }
+
+            return $row;
+          })
+          ->all();
+
+        return [
+          'barData' => $barData,
+          'radarData' => $radarData,
+          'radarSeries' => $radarSeries,
+          'donutData' => $donutData,
+          'selectedCareerDetails' => $topCareerRecommendations
+            ->map(function ($recommendation) {
+              return [
+                'name' => $recommendation->techField->name,
+                'score' => round($recommendation->score * 100),
+                'explanation' => $recommendation->techField->description,
+                'details' => [
+                  'This match is computed from your completed questionnaire responses and model prediction score.',
+                  'Review the radar profile to compare this career against your response-based strengths.',
+                ],
+              ];
+            })
+            ->all(),
+        ];
+      }
+
+      private function calculateAxisBaseScores(int $userId): array
+      {
+        $defaultAxisScores = [
+          'Logic' => 55,
+          'Creativity' => 55,
+          'Hardware' => 55,
+          'Security' => 55,
+          'Problem-Solving' => 55,
+        ];
+
+        $responses = Response::where('user_id', $userId)
+          ->get(['question_id', 'value']);
+
+        if ($responses->isEmpty()) {
+          return $defaultAxisScores;
+        }
+
+        $axisQuestionMap = [
+          'Logic' => [1, 3, 7, 10, 24, 26, 27, 30, 31, 32, 65, 66, 67, 69],
+          'Creativity' => [2, 4, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45],
+          'Hardware' => [6, 23, 47, 48, 49, 50, 51, 59, 60, 61, 62, 63],
+          'Security' => [5, 17, 18, 19, 20, 21, 22, 49, 57],
+          'Problem-Solving' => [8, 9, 10, 27, 31, 32, 33, 55, 56, 57, 68, 69],
+        ];
+
+        $axisTotals = [
+          'Logic' => 0,
+          'Creativity' => 0,
+          'Hardware' => 0,
+          'Security' => 0,
+          'Problem-Solving' => 0,
+        ];
+        $axisCounts = [
+          'Logic' => 0,
+          'Creativity' => 0,
+          'Hardware' => 0,
+          'Security' => 0,
+          'Problem-Solving' => 0,
+        ];
+
+        foreach ($responses as $response) {
+          $normalizedValue = $this->normalizeResponseValue($response->value);
+          $questionId = (int) $response->question_id;
+
+          foreach ($axisQuestionMap as $axis => $questionIds) {
+            if (in_array($questionId, $questionIds, true)) {
+              $axisTotals[$axis] += $normalizedValue;
+              $axisCounts[$axis]++;
+            }
+          }
+        }
+
+        foreach ($defaultAxisScores as $axis => $defaultValue) {
+          if ($axisCounts[$axis] > 0) {
+            $defaultAxisScores[$axis] = (int) round($axisTotals[$axis] / $axisCounts[$axis]);
+          }
+        }
+
+        return $defaultAxisScores;
+      }
+
+      private function normalizeResponseValue($rawValue): float
+      {
+        if (is_array($rawValue)) {
+          if (empty($rawValue)) {
+            return 55;
+          }
+
+          $total = 0;
+          foreach ($rawValue as $valuePart) {
+            $total += $this->normalizeResponseValue($valuePart);
+          }
+
+          return $total / count($rawValue);
+        }
+
+        if (is_string($rawValue)) {
+          $trimmed = trim($rawValue);
+          if ($trimmed === '') {
+            return 55;
+          }
+
+          if ($trimmed[0] === '[' || $trimmed[0] === '{') {
+            $decoded = json_decode($trimmed, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+              return $this->normalizeResponseValue($decoded);
+            }
+          }
+
+          if (is_numeric($trimmed)) {
+            $rawValue = (float) $trimmed;
+          }
+        }
+
+        if (!is_numeric($rawValue)) {
+          return 55;
+        }
+
+        $value = (float) $rawValue;
+
+        if ($value <= 1) {
+          return max(0, min(100, $value * 100));
+        }
+
+        if ($value <= 3) {
+          return ($value / 3) * 100;
+        }
+
+        if ($value <= 5) {
+          return ($value / 5) * 100;
+        }
+
+        if ($value <= 10) {
+          return ($value / 10) * 100;
+        }
+
+        return max(0, min(100, $value));
+      }
+
+      private function calculateCareerAxisScore(float $axisBaseScore, float $careerScore, string $axis, string $careerName): int
+      {
+        $careerScorePercent = max(0, min(100, $careerScore * 100));
+        $axisWeight = $this->getCareerAxisWeight($careerName, $axis);
+
+        $blended = ($axisBaseScore * 0.65) + (($careerScorePercent * $axisWeight) * 0.35);
+
+        return (int) round(max(20, min(100, $blended)));
+      }
+
+      private function getCareerAxisWeight(string $careerName, string $axis): float
+      {
+        $normalized = strtolower(trim(preg_replace('/\s+/', ' ', $careerName)));
+
+        $profiles = [
+          'game development' => [
+            'Logic' => 1.05,
+            'Creativity' => 1.25,
+            'Hardware' => 0.85,
+            'Security' => 0.80,
+            'Problem-Solving' => 1.10,
+          ],
+          'internet of things' => [
+            'Logic' => 1.00,
+            'Creativity' => 0.90,
+            'Hardware' => 1.30,
+            'Security' => 1.00,
+            'Problem-Solving' => 1.10,
+          ],
+          'internet of things (iot)' => [
+            'Logic' => 1.00,
+            'Creativity' => 0.90,
+            'Hardware' => 1.30,
+            'Security' => 1.00,
+            'Problem-Solving' => 1.10,
+          ],
+          'iot' => [
+            'Logic' => 1.00,
+            'Creativity' => 0.90,
+            'Hardware' => 1.30,
+            'Security' => 1.00,
+            'Problem-Solving' => 1.10,
+          ],
+          'cybersecurity' => [
+            'Logic' => 1.10,
+            'Creativity' => 0.80,
+            'Hardware' => 0.95,
+            'Security' => 1.35,
+            'Problem-Solving' => 1.15,
+          ],
+          'artificial intelligence & ml' => [
+            'Logic' => 1.25,
+            'Creativity' => 1.00,
+            'Hardware' => 0.80,
+            'Security' => 0.90,
+            'Problem-Solving' => 1.20,
+          ],
+          'data science' => [
+            'Logic' => 1.20,
+            'Creativity' => 0.95,
+            'Hardware' => 0.80,
+            'Security' => 0.90,
+            'Problem-Solving' => 1.15,
+          ],
+          'cloud computing' => [
+            'Logic' => 1.10,
+            'Creativity' => 0.85,
+            'Hardware' => 1.05,
+            'Security' => 1.05,
+            'Problem-Solving' => 1.15,
+          ],
+          'software development' => [
+            'Logic' => 1.10,
+            'Creativity' => 0.95,
+            'Hardware' => 0.85,
+            'Security' => 0.90,
+            'Problem-Solving' => 1.20,
+          ],
+          'blockchain' => [
+            'Logic' => 1.15,
+            'Creativity' => 0.90,
+            'Hardware' => 0.90,
+            'Security' => 1.20,
+            'Problem-Solving' => 1.10,
+          ],
+          'ui/ux design' => [
+            'Logic' => 0.90,
+            'Creativity' => 1.35,
+            'Hardware' => 0.70,
+            'Security' => 0.70,
+            'Problem-Solving' => 1.00,
+          ],
+          'web development' => [
+            'Logic' => 1.10,
+            'Creativity' => 1.00,
+            'Hardware' => 0.80,
+            'Security' => 0.95,
+            'Problem-Solving' => 1.15,
+          ],
+          'mobile development' => [
+            'Logic' => 1.05,
+            'Creativity' => 1.05,
+            'Hardware' => 0.85,
+            'Security' => 0.90,
+            'Problem-Solving' => 1.10,
+          ],
+        ];
+
+        return $profiles[$normalized][$axis] ?? 1.0;
+      }
 
     public function submitSurvey(Request $request)
     {
