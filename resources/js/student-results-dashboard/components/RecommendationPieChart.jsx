@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { getColorForIndex } from '../chartData';
 
@@ -22,8 +22,6 @@ function PieTooltip({ active, payload }) {
 }
 
 export default function RecommendationPieChart({ data, topLabel = '' }) {
-    const [activeIndex, setActiveIndex] = useState(null);
-
     const chartData = useMemo(() => {
         const normalized = [...data]
             .map((item) => ({
@@ -80,11 +78,10 @@ export default function RecommendationPieChart({ data, topLabel = '' }) {
                             cy="50%"
                             outerRadius={125}
                             paddingAngle={3}
-                            labelLine={false}
-                            label={({ percent }) => `${Math.round(percent * 100)}%`}
+                            labelLine
+                            label={({ name, percent }) => `${Math.round(percent * 100)}% ${name}`}
                             isAnimationActive
                             animationDuration={900}
-                            onMouseLeave={() => setActiveIndex(null)}
                         >
                             {chartData.map((entry, index) => {
                                 const fill = entry.name === 'Others' ? OTHERS_COLOR : getColorForIndex(index);
@@ -92,10 +89,8 @@ export default function RecommendationPieChart({ data, topLabel = '' }) {
                                     <Cell
                                         key={`${entry.name}-${index}`}
                                         fill={fill}
-                                        fillOpacity={activeIndex === null || activeIndex === index ? 1 : 0.55}
                                         stroke="#ffffff"
                                         strokeWidth={2}
-                                        onMouseEnter={() => setActiveIndex(index)}
                                         style={{ transition: 'all 180ms ease' }}
                                     />
                                 );
@@ -103,30 +98,6 @@ export default function RecommendationPieChart({ data, topLabel = '' }) {
                         </Pie>
                     </PieChart>
                 </ResponsiveContainer>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {chartData.map((entry, index) => {
-                    const isActive = activeIndex === null || activeIndex === index;
-                    return (
-                        <div
-                            key={`${entry.name}-distribution`}
-                            className={`rounded-md border px-3 py-2 transition-all duration-150 ${isActive ? 'border-slate-300 bg-slate-50' : 'border-slate-200 bg-white opacity-80'}`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <span
-                                        className="inline-block w-2.5 h-2.5 rounded-full"
-                                        style={{ backgroundColor: entry.name === 'Others' ? OTHERS_COLOR : getColorForIndex(index) }}
-                                    ></span>
-                                    <span className="text-sm font-medium text-slate-800">{entry.name}</span>
-                                </div>
-                                <span className="text-sm font-semibold text-slate-900">{entry.score}%</span>
-                            </div>
-                            <p className="text-xs text-slate-600 mt-1">{entry.explanation}</p>
-                        </div>
-                    );
-                })}
             </div>
         </div>
     );
